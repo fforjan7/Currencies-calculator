@@ -22,7 +22,28 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
         title: Text("Currency Converter"),
         backgroundColor: Colors.black,
       ),
-      body: BlocBuilder<CurrencyrateBloc, CurrencyrateState>(
+      body: BlocConsumer<CurrencyrateBloc, CurrencyrateState>(
+        listener: (context, state) {
+          if (state is CurrencyrateError) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Error!"),
+                content: Text(state.message),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      BlocProvider.of<CurrencyrateBloc>(context)
+                          .add(InitialFetch());
+                          Navigator.of(context).pop();
+                    },
+                    child: Text("Retry"),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is CurrencyrateLoaded) {
             return Column(

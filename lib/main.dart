@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rma_projekt/pages/currencies_list.dart';
 
 import 'bloc/currencyrate_bloc.dart';
 import 'data/currency_api.dart';
-import 'data/model/currency.dart';
+import 'pages/currencies_list.dart';
 import 'pages/currency_converter_page.dart';
 
 void main() => runApp(BlocProvider(

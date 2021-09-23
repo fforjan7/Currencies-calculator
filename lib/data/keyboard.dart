@@ -140,7 +140,6 @@ class NumericKeyboard extends StatelessWidget {
     );
   }
 
-  //TODO: dodati selected variable
   void buttonPressed(BuildContext context, String keyPressed) {
     final currencyrateBloc = context.read<CurrencyrateBloc>();
     currencyrateBloc.add(GetKeyboardInput(keyPressed));

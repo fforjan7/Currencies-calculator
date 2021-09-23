@@ -35,7 +35,7 @@ class _CurrencyValueState extends State<CurrencyValue> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 30.0, right: 20.0),
+                margin: EdgeInsets.only(left: 30.0),
                 child: InkWell(
                   onTap: () {
                     if (widget.index > 0) {
@@ -74,9 +74,12 @@ class _CurrencyValueState extends State<CurrencyValue> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.19,
+              ),
               Container(
                 alignment: Alignment.centerRight,
-                width: MediaQuery.of(context).size.height * 0.37,
+                width: MediaQuery.of(context).size.width * 0.5,
                 child: FittedBox(
                   child: Text(
                     widget.currency.currentValue,

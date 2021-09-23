@@ -31,19 +31,25 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
   Stream<CurrencyrateState> _mapInitialFetchToState(
       InitialFetch event, CurrencyrateState prevState) async* {
     yield CurrencyrateLoading();
-    final currenciesStrings = await _currencyApi.getCurrencies();
-    yield CurrencyrateLoaded(
-      Currency(currencyName: "EUR", currencyRate: 1, currentValue: "0"),
-      Currency(
-          currencyName: "HRK",
-          currencyRate: currenciesStrings["HRK"],
-          currentValue: "0"),
-      Currency(
-          currencyName: "USD",
-          currencyRate: currenciesStrings["USD"],
-          currentValue: "0"),
-      currenciesStrings,
-    );
+
+    try {
+      final currenciesStrings = await _currencyApi.getCurrencies();
+      yield CurrencyrateLoaded(
+        Currency(currencyName: "EUR", currencyRate: 1, currentValue: "0"),
+        Currency(
+            currencyName: "HRK",
+            currencyRate: currenciesStrings["HRK"],
+            currentValue: "0"),
+        Currency(
+            currencyName: "USD",
+            currencyRate: currenciesStrings["USD"],
+            currentValue: "0"),
+        currenciesStrings,
+      );
+    } catch (e) {
+      yield CurrencyrateError(
+          "No internet connection, please try again later!");
+    }
   }
 
   Stream<CurrencyrateState> _mapGetKeyboardInputToState(
@@ -99,7 +105,6 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
       GetNewCurrency event, CurrencyrateState prevState) async* {
     if (prevState is CurrencyrateLoaded) {
       if (event.index == 1) {
-        print(event.currency.currencyName);
         yield CurrencyrateLoaded(
           prevState.currency1,
           Currency(

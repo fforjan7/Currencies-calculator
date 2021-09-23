@@ -31,13 +31,4 @@ class CurrencyrateError extends CurrencyrateState {
   final String message;
   const CurrencyrateError(this.message);
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CurrencyrateError && other.message == message;
-  }
-
-  @override
-  int get hashCode => message.hashCode;
 }
