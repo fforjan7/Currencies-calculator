@@ -17,5 +17,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       final savedDataMaps = savedData.map((e) => jsonDecode(e)).toList();
       yield HistoryLoaded(savedDataMaps);
     }
+    if (event is DeleteHistory) {
+      final sp = await SharedPreferences.getInstance();
+      sp.remove('savedData');
+      yield HistoryLoaded([]);
+    }
   }
 }

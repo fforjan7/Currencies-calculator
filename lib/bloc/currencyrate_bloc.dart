@@ -37,9 +37,35 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
       InitialFetch event, CurrencyrateState prevState) async* {
     yield CurrencyrateLoading();
 
-    try {
-      final currenciesStrings = await _currencyApi.getCurrencies();
-
+    final sp = await SharedPreferences.getInstance();
+    final rates = sp.getString('rates');
+    if (rates == null) {
+      try {
+        final currenciesStrings = await _currencyApi.getCurrencies();
+        sp.setString('rates', jsonEncode(currenciesStrings));
+        yield CurrencyrateLoaded(
+          Currency(currencyName: "EUR", currencyRate: 1, currentValue: "1"),
+          Currency(
+              currencyName: "HRK",
+              currencyRate: currenciesStrings["HRK"],
+              currentValue: (1 * currenciesStrings["HRK"]).toStringAsFixed(2)),
+          Currency(
+              currencyName: "USD",
+              currencyRate: currenciesStrings["USD"],
+              currentValue: (1 * currenciesStrings["USD"]).toStringAsFixed(2)),
+          currenciesStrings,
+        );
+      } catch (e) {
+        yield CurrencyrateError(
+            "No internet connection, please try again later!");
+      }
+    } else {
+      dynamic currenciesStrings;
+      try {
+        currenciesStrings = await _currencyApi.getCurrencies();
+      } catch (e) {
+        currenciesStrings = jsonDecode(rates);
+      }
       yield CurrencyrateLoaded(
         Currency(currencyName: "EUR", currencyRate: 1, currentValue: "1"),
         Currency(
@@ -52,9 +78,6 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
             currentValue: (1 * currenciesStrings["USD"]).toStringAsFixed(2)),
         currenciesStrings,
       );
-    } catch (e) {
-      yield CurrencyrateError(
-          "No internet connection, please try again later!");
     }
   }
 

@@ -4,5 +4,9 @@ part of 'history_bloc.dart';
 abstract class HistoryEvent {}
 
 class LoadData extends HistoryEvent{
+
+}
+
+class DeleteHistory extends HistoryEvent{
   
 }
