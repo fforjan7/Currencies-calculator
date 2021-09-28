@@ -18,3 +18,12 @@ class GetNewCurrency extends CurrencyrateEvent {
 class InitialFetch extends CurrencyrateEvent {
   InitialFetch();
 }
+
+class SaveData extends CurrencyrateEvent {
+  String date;
+  Currency currency1;
+  Currency currency2;
+  Currency currency3;
+
+  SaveData(this.date, this.currency1, this.currency2, this.currency3);
+}

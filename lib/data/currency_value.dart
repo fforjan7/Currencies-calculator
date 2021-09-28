@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rma_projekt/bloc/searchbar_bloc.dart';
 import 'package:rma_projekt/data/model/currency.dart';
 import 'package:rma_projekt/pages/currencies_list.dart';
 
@@ -39,6 +41,8 @@ class _CurrencyValueState extends State<CurrencyValue> {
                 child: InkWell(
                   onTap: () {
                     if (widget.index > 0) {
+                      BlocProvider.of<SearchbarBloc>(context).add(
+                          ChangedValue('', widget.currencies.keys.toList()));
                       Navigator.of(context).pushNamed(
                         CurrenciesListScreen.routeName,
                         arguments: {

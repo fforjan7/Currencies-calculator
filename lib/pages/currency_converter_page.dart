@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rma_projekt/bloc/history_bloc.dart';
+import 'package:rma_projekt/bloc/searchbar_bloc.dart';
 import 'package:rma_projekt/pages/history_page.dart';
 
 import '../bloc/currencyrate_bloc.dart';
@@ -16,52 +18,59 @@ class CurrencyConverterPage extends StatefulWidget {
 class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Currency Converter"),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(HistoryPage.routeName);
-          },
-          icon: Icon(
-            Icons.history,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.save),
-          ),
-        ],
-        backgroundColor: Colors.black,
-      ),
-      body: BlocConsumer<CurrencyrateBloc, CurrencyrateState>(
-        listener: (context, state) {
-          if (state is CurrencyrateError) {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text("Error!"),
-                content: Text(state.message),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      BlocProvider.of<CurrencyrateBloc>(context)
-                          .add(InitialFetch());
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Retry"),
-                  ),
-                ],
+    return BlocConsumer<CurrencyrateBloc, CurrencyrateState>(
+      listener: (context, state) {
+        if (state is CurrencyrateError) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Error!"),
+              content: Text(state.message),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    BlocProvider.of<CurrencyrateBloc>(context)
+                        .add(InitialFetch());
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Retry"),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is CurrencyrateLoaded) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text("Currency Converter"),
+              leading: IconButton(
+                onPressed: () {
+                  BlocProvider.of<HistoryBloc>(context).add(LoadData());
+                  Navigator.of(context).pushNamed(HistoryPage.routeName);
+                },
+                icon: Icon(
+                  Icons.history,
+                ),
               ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is CurrencyrateLoaded) {
-            return Column(
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    BlocProvider.of<CurrencyrateBloc>(context).add(SaveData(
+                        DateTime.now().toString(),
+                        state.currency1,
+                        state.currency2,
+                        state.currency3));
+                  },
+                  icon: Icon(Icons.save),
+                ),
+              ],
+              backgroundColor: Colors.black,
+            ),
+            body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CurrencyValue(
@@ -87,12 +96,14 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                 ),
                 NumericKeyboard(),
               ],
-            );
-          } else {
-            return Container();
-          }
-        },
-      ),
+            ),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }

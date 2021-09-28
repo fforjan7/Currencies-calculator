@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rma_projekt/data/currency_api.dart';
 import 'package:rma_projekt/data/model/currency.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'currencyrate_event.dart';
 part 'currencyrate_state.dart';
@@ -25,6 +27,9 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
     }
     if (event is InitialFetch) {
       yield* _mapInitialFetchToState(event, state);
+    }
+    if (event is SaveData) {
+      yield* _mapSavedDataToState(event, state);
     }
   }
 
@@ -128,5 +133,21 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
         );
       }
     }
+  }
+
+  Stream<CurrencyrateState> _mapSavedDataToState(
+      SaveData event, CurrencyrateState prevState) async* {
+    final sp = await SharedPreferences.getInstance();
+    final savedData = sp.getStringList('savedData') ?? [];
+    savedData.add(jsonEncode({
+      'date': event.date,
+      'currency1Name': event.currency1.currencyName,
+      'currency1Value': event.currency1.currentValue,
+      'currency2Name': event.currency2.currencyName,
+      'currency2Value': event.currency2.currentValue,
+      'currency3Name': event.currency3.currencyName,
+      'currency3Value': event.currency3.currentValue,
+    }));
+    sp.setStringList('savedData', savedData);
   }
 }

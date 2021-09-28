@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rma_projekt/bloc/history_bloc.dart';
 import 'package:rma_projekt/bloc/searchbar_bloc.dart';
 import 'package:rma_projekt/pages/history_page.dart';
 
@@ -15,6 +16,9 @@ void main() => runApp(MultiBlocProvider(
               CurrencyrateBloc(ApiClient())..add(InitialFetch()),
         ),
         BlocProvider(create: (context) => SearchbarBloc()),
+        BlocProvider(
+          create: (context) => HistoryBloc(),
+        ),
       ],
       child: MyApp(),
     ));
