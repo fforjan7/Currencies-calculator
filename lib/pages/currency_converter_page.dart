@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rma_projekt/pages/history_page.dart';
 
 import '../bloc/currencyrate_bloc.dart';
 import '../data/currency_value.dart';
@@ -20,6 +21,20 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Currency Converter"),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(HistoryPage.routeName);
+          },
+          icon: Icon(
+            Icons.history,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.save),
+          ),
+        ],
         backgroundColor: Colors.black,
       ),
       body: BlocConsumer<CurrencyrateBloc, CurrencyrateState>(
@@ -35,7 +50,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                     onPressed: () {
                       BlocProvider.of<CurrencyrateBloc>(context)
                           .add(InitialFetch());
-                          Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                     child: Text("Retry"),
                   ),

@@ -34,16 +34,17 @@ class CurrencyrateBloc extends Bloc<CurrencyrateEvent, CurrencyrateState> {
 
     try {
       final currenciesStrings = await _currencyApi.getCurrencies();
+
       yield CurrencyrateLoaded(
-        Currency(currencyName: "EUR", currencyRate: 1, currentValue: "0"),
+        Currency(currencyName: "EUR", currencyRate: 1, currentValue: "1"),
         Currency(
             currencyName: "HRK",
             currencyRate: currenciesStrings["HRK"],
-            currentValue: "0"),
+            currentValue: (1 * currenciesStrings["HRK"]).toStringAsFixed(2)),
         Currency(
             currencyName: "USD",
             currencyRate: currenciesStrings["USD"],
-            currentValue: "0"),
+            currentValue: (1 * currenciesStrings["USD"]).toStringAsFixed(2)),
         currenciesStrings,
       );
     } catch (e) {
